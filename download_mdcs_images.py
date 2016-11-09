@@ -4,40 +4,39 @@
 import json
 import requests
 import xmltodict
+from toolz.curried import pipe, map, filter, first
+import shutil
 
 
-def download_mdcs_data():
-    user = "dwheeler"
-    password = "12345"
+def download_file(url, filename):
+    r = requests.get(url, stream=True)
+    with open(filename, 'wb') as fstream:
+        shutil.copyfileobj(r.raw, fstream)
+    return filename
+
+def download_images():
     mdcs_url = "http://129.6.153.123:8000"
-    schema_title = 'SemImage'
-    url = mdcs_url + "/rest/templates/select/all"
+    auth=("dwheeler", "12345")
 
-    allSchemas = json.loads(requests.get(url, auth=(user, password)).text)
-    schemaIDs = [schema['id'] for schema in allSchemas if schema['title'] == schema_title]
+    data = requests.get(mdcs_url + "/rest/templates/select/all", auth=auth).text
 
-    url = mdcs_url + "/rest/explore/query-by-example"
-    query = {"schema" : schemaIDs[0]}
-    req_data = {"query" : json.dumps(query)}
-    qres = json.loads(requests.post(url, req_data, auth=(user, password)).text)
+    parsexml = lambda data: xmltodict.parse(data['content'])['semImage']['imageFile']
 
-    imgfile = [data['title'] for data in qres]
-    img_urls = [xmltodict.parse(data['content'])['semImage']['imageFile'] for data in qres]
+    make_dict = lambda data: dict(filename=data['title'] + '.tif', url=parsexml(data))
 
-    # for i in range(len(qres)):
-    #     imgfile.append(qres[i]['title'])
-    #     content = qres[i]['content']
-    #     # qdata = DMD.DataModelDict(content)
-    #     content_dict = xmltodict.parse(content)
-    #     # img_urls.append(qdata.find('imageFile'))
-    #     img_urls.append(content_dict['semImage']['imageFile'])
+    funcs = (
+        json.loads,
+        filter(lambda schema: schema['title'] == "SemImage"),
+        first,
+        lambda data: json.dumps({"schema" : data['id']}),
+        lambda data: requests.post(mdcs_url + "/rest/explore/query-by-example", {"query" : data}, auth=auth).text,
+        json.loads,
+        map(make_dict),
+        map(lambda data: download_file(data['url'], data['filename'])),
+        list
+    )
 
-
-    print("no_images: ",len(img_urls))
-    print()
-    print(imgfile)
-    print()
-    print(img_urls)
+    return pipe(data, *funcs)
 
 if __name__ == '__main__':
-    download_mdcs_data()
+    print(download_images())

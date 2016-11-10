@@ -1,5 +1,16 @@
 ---
 language: python
+before_install:
+  ## install git lfs before cloning the repo
+  - sudo apt-get update
+  - wget https://github.com/github/git-lfs/releases/download/v1.4.4/git-lfs-linux-amd64-1.4.4.tar.gz
+  - tar zxvf git-lfs-linux-amd64-1.4.4.tar.gz
+  - cd git-lfs-1.4.4/
+  - mkdir -p $HOME/bin
+  - install git-lfs $HOME/bin
+  - export PATH=$HOME/bin:$PATH
+  - git lfs install
+
 install:
   - sudo apt-get update
   # We do this conditionally because it saves us some downloading if the

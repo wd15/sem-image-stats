@@ -28,6 +28,7 @@ install:
   - conda install -q -y -n test-environment pytest matplotlib scikit-image jupyter
   - pip install pylint nbval pytesseract
   - unset VIRTUAL_ENV
+  - pip install .
 script:
   - py.test
   - pylint --extension-pkg-whitelist=numpy ./download_mdcs_images.py

@@ -1,24 +1,32 @@
 """Fetch images from MDCS.
 """
 
+import shutil
+
 import json
 import requests
 import xmltodict
-from toolz.curried import pipe, map, filter, first
-import shutil
+from toolz.curried import first, pipe, map, filter  # pylint: disable=no-member, no-name-in-module, redefined-builtin
+
 
 
 def download_file(url, filename):
-    r = requests.get(url, stream=True)
+    """Download a file.
+
+    Args:
+      url: where to get the file from
+      filename: where to write the file
+    """
+    request = requests.get(url, stream=True)
     with open(filename, 'wb') as fstream:
-        shutil.copyfileobj(r.raw, fstream)
+        shutil.copyfileobj(request.raw, fstream)
     return filename
 
 def download_images():
+    """Download images from the MDCS.
+    """
     mdcs_url = "http://129.6.153.123:8000"
-    auth=("dwheeler", "12345")
-
-    data = requests.get(mdcs_url + "/rest/templates/select/all", auth=auth).text
+    auth = ("dwheeler", "12345")
 
     parsexml = lambda data: xmltodict.parse(data['content'])['semImage']['imageFile']
 
@@ -29,12 +37,16 @@ def download_images():
         filter(lambda schema: schema['title'] == "SemImage"),
         first,
         lambda data: json.dumps({"schema" : data['id']}),
-        lambda data: requests.post(mdcs_url + "/rest/explore/query-by-example", {"query" : data}, auth=auth).text,
+        lambda data: requests.post(mdcs_url + "/rest/explore/query-by-example",
+                                   {"query" : data},
+                                   auth=auth).text,
         json.loads,
         map(make_dict),
         map(lambda data: download_file(data['url'], data['filename'])),
         list
     )
+
+    data = requests.get(mdcs_url + "/rest/templates/select/all", auth=auth).text
 
     return pipe(data, *funcs)
 

@@ -18,7 +18,6 @@ install:
   - conda install -q -y -n test-environment pytest matplotlib scikit-image jupyter
   - pip install pylint nbval pytesseract
   - unset VIRTUAL_ENV
-  - pip install .
 script:
   - py.test index.ipynb --nbval --sanitize-with sanitize.cfg
   - pylint --extension-pkg-whitelist=numpy *.py

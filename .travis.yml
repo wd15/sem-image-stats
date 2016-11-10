@@ -10,12 +10,13 @@ before_install:
   - install git-lfs $HOME/bin
   - export PATH=$HOME/bin:$PATH
   - git lfs install
+  - cd ..
 install:
   - sudo apt-get update
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
   - sudo apt-get install tesseract-ocr
-  -  wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
@@ -28,7 +29,6 @@ install:
   - conda install -q -y -n test-environment pytest matplotlib scikit-image jupyter
   - pip install pylint nbval pytesseract
   - unset VIRTUAL_ENV
-  - pip install .
 script:
-  - py.test
+  - py.test --nbval --sanitize-with sanitize.cfg index.ipynb
   - pylint --extension-pkg-whitelist=numpy ./download_mdcs_images.py

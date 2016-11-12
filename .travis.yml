@@ -26,8 +26,7 @@ install:
   - conda info -a
   - conda create -q -y -n test-environment python=3
   - source activate test-environment
-  - conda install -q -y -n test-environment pytest matplotlib scikit-image jupyter toolz
-  - conda install -q -y -n test-environment -c conda-forge toolz xmltodict
+  - conda install -q -y -n test-environment pytest matplotlib scikit-image jupyter toolz pandas
   - pip install pylint nbval pytesseract xmltodict
   - unset VIRTUAL_ENV
 script:

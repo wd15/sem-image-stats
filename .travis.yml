@@ -30,6 +30,8 @@ install:
   - pip install pylint nbval pytesseract xmltodict
   - unset VIRTUAL_ENV
   - git lfs fetch
+  - git lfs pull
+  - git lfs checkout
 script:
   - py.test --nbval --sanitize-with sanitize.cfg index.ipynb
   - pylint --extension-pkg-whitelist=numpy ./download_mdcs_images.py

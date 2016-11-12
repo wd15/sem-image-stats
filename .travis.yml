@@ -29,6 +29,8 @@ install:
   - conda install -q -y -n test-environment pytest matplotlib scikit-image jupyter toolz pandas
   - pip install pylint nbval pytesseract xmltodict
   - unset VIRTUAL_ENV
+  - git rm data/*.tif
+  - git checkout .
 script:
   - py.test --nbval --sanitize-with sanitize.cfg index.ipynb
   - pylint --extension-pkg-whitelist=numpy ./download_mdcs_images.py

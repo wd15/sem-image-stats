@@ -1,36 +1,16 @@
-# Calculate SEM Images Stats
-
-
-<p>
-<center>
-<sup><strong>
-<h1>
+<h1> <p align="center"><sup><strong>
 Analysis of SEM Images of Steel
+</strong></sup></p>
 </h1>
-</strong></sup>
-</center>
-</p>
 
-<p>
-<ul>
-
-<li style="float: left; display: inline">
+<p align="center">
 <a href="https://travis-ci.org/wd15/sem-image-stats" target="_blank">
-<img src="https://api.travis-ci.org/wd15/sem-image-stats.svg"
-alt="Travis CI">
+<img src="https://api.travis-ci.org/wd15/sem-image-stats.svg" alt="Travis CI">
 </a>
-</li>
-
-<li style="float: left; display: inline">
 <a href="https://github.com/wd15/sem-images-stats/blob/master/LICENSE.md" target="_blank">
-<img src="https://img.shields.io/badge/license-mit-blue.svg"
-alt="Travis CI">
+<img src="https://img.shields.io/badge/license-mit-blue.svg" alt="License">
 </a>
-</li>
-
-</ul>
 </p>
-<br>
 
 ### Overview
 
